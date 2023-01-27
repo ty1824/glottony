@@ -7,15 +7,11 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-/**
- * Use mavenCentral for most things
- * google sources the KSP plugin
- */
 repositories {
     mavenCentral()
-    google()
 }
 
+val dialectorVersion: String by project
 dependencies {
     antlr("org.antlr:antlr4:4.8")
 
@@ -26,8 +22,8 @@ dependencies {
     implementation("org.antlr:antlr4-runtime:4.8")
     implementation("com.google.guava:guava:28.2-jre")
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.12.0")
-    implementation("dev.dialector:dialector-kt:0.1.0")
-    ksp("dev.dialector:dialector-kt-processor:0.1.0")
+    implementation("dev.dialector:dialector-kt:${dialectorVersion}")
+    ksp("dev.dialector:dialector-kt-processor:${dialectorVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testImplementation("io.mockk:mockk:1.9.3")
