@@ -6,10 +6,11 @@ plugins {
     application
     id("org.jetbrains.kotlinx.kover")
 }
-
-repositories {
-    mavenCentral()
-}
+//
+//repositories {
+//    mavenLocal()
+//    mavenCentral()
+//}
 
 val dialectorVersion: String by project
 dependencies {
@@ -32,6 +33,12 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:1.7.0.2")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 ksp {

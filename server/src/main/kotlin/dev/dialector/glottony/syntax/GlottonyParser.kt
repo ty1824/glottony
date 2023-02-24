@@ -94,6 +94,8 @@ class SourceMapImpl(private val rangeMap: Map<Node, SourceRange>) : SourceMap {
     override fun getRangeForNode(node: Node): SourceRange? = rangeMap[node]
 }
 
+data class ParseResult<T : Node>(val result: T, val sourceMap: SourceMap)
+
 
 fun SourceRange.contains(location: SourceLocation): Boolean =
     this.start <= location && this.end >= location

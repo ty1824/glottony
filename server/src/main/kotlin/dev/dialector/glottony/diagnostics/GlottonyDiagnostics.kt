@@ -66,6 +66,57 @@ class GlottonyDiagnosticProvider(private val typesystem: GlottonyTypesystem) {
         }
     )
 
+    fun run(root: GlottonyRoot): List<ModelDiagnostic> {
+        val diagnostics = mutableListOf<ModelDiagnostic>()
+        println("Computing types")
+        val resolvedTypes = typesystem.inferTypes(root.rootNode)
+
+        val context = object : DiagnosticEvaluationContext {
+            var currentNode: Node = root.rootNode
+
+            override val typeLattice: TypeLattice = typesystem.lattice
+
+            override fun typeOf(node: Node): Type? = resolvedTypes[node]
+
+            override fun scopeFor(node: Node): Scope? {
+                TODO("Not yet implemented")
+            }
+
+            override fun resolve(reference: NodeReference<*>): Node? {
+                TODO("Not yet implemented")
+            }
+
+            override fun diagnostic(message: String, node: Node) {
+                diagnostics += SimpleModelDiagnostic(currentNode, node, message)
+            }
+
+            override fun getRoots(): Sequence<Node> {
+                TODO("Not yet implemented")
+            }
+
+            override fun getRoot(id: RootId): Node? {
+                TODO("Not yet implemented")
+            }
+
+        }
+        try {
+            println("Computing diagnostics")
+            context.apply {
+                for (node in root.rootNode.getAllDescendants(true)) {
+                    context.currentNode = node
+                    for (rule in diagnosticRules) {
+                        rule(this, node)
+                    }
+                }
+            }
+            println("Computed diagnostics")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+        return diagnostics.toList()
+    }
+
     suspend fun evaluate(root: GlottonyRoot): List<ModelDiagnostic> {
         val diagnostics = mutableListOf<ModelDiagnostic>()
         println("Computing types")
